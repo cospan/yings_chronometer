@@ -1,6 +1,6 @@
 #platform "uLCD-43PT"
 
-// generated 10/18/2014 9:18:43 PM
+// generated 10/18/2014 11:52:05 PM
 
 #MODE RUNFLASH
 
@@ -116,18 +116,18 @@
     REPORT_OBJ      5
     REPORT_EVENT    7
 // End P1.inc
-    nObjects        25
+    nObjects        27
     nInputs         15
     ANITIMERS       0
 #END
 
 #DATA
-    word formstidx 0, 16, 20
-    word formenidx 16, 20, 25
-    word IPControls -1, -1, -1, -1, -1, 0, -1, -1, 44, -1, -1, 88, 132, -1, -1, -1, 176, 220, 242, -1, -1, 286
+    word formstidx 0, 18, 22
+    word formenidx 18, 22, 27
+    word IPControls -1, -1, -1, -1, -1, 0, -1, -1, 44, -1, -1, 88, 132, -1, -1, -1, -1, -1, 176, 220, 242, -1, -1, 286
     word IPData tUserButton, 1, -1, -1, -1, -1, -1, -1, 0, 22, 8,
                 OT_ACTIVATE, 10, 1, 0, 18, 0, 0, 0, 0, 0, 0,
-                tGSlider, 1, 312, 149, 100, 439, -1, -1, 66, 0, 2,
+                tGSlider, 1, 258, 103, 100, 636, -1, -1, 66, 0, 2,
                 OT_REPORT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                 tUserButton, 1, -1, -1, -1, -1, -1, -1, 0, 110, 16,
                 OT_REPORT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7,
@@ -165,7 +165,7 @@
     word oCoolgauges 0
     word oCustomdigitss 0
     word oForms 3, -1, -1, -1
-    word oGauges 0
+    word oGauges 1, iGauge0
     word oImages 0
     word oKeyboards 0
     word oLeds 0
@@ -175,7 +175,7 @@
     word oThermometers 1, iThermometer0
     word oUserleds 0
     word oVideos 1, iVideo0
-    word oStaticTexts 11, iStatictext0, iStatictext1, iStatictext2, iStatictext3, iStatictext4, iStatictext5, -1, -1, iStatictext8, iStatictext9, iStatictext10
+    word oStaticTexts 11, iStatictext0, iStatictext1, iStatictext2, iStatictext3, iStatictext4, iStatictext5, iStatictext6, -1, iStatictext8, iStatictext9, iStatictext10
     word oSpectrums 0
     word oScopes 1
     word oTanks 0
