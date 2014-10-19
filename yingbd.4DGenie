@@ -1,0 +1,825 @@
+﻿Version     0.0
+Platform    uLCD-43PT-L
+PlatRes     272x480
+Depends
+end
+Options
+    Genie
+    Speed                        115200
+    Checksum                     No
+    ResponseSize                 2
+    Multidrop                    No
+    Destination                  1
+    SndBuf                       0
+end
+Form
+    Name                         Form0
+    Bgtype                       Color
+    Color                        BLACK
+    Image                        (None)
+    Source.Height                0
+    Source.Left                  0
+    Source.Top                   0
+    Source.Width                 0
+    OnActivate                   ''
+    OnCreate                     ''
+    OnRepeat                     ''
+    OnTouchMoving                ''
+    OnTouchPressed               ''
+    OnTouchReleased              ''
+end
+Scope
+    Name                         Scope0
+    Color                        BLACK
+    GraticuleColor               0x00B900
+    GraticuleVisible             Yes
+    GraticuleXinc                10
+    GraticuleYinc                10
+    Height                       150
+    Left                         0
+    RefreshIncrement             10
+    Top                          122
+    Trace1Color                  LIME
+    Trace2Color                  BLUE
+    Trace3Color                  RED
+    Trace4Color                  FUCHSIA
+    Traces                       1
+    Width                        256
+    Xmag                         0
+    Yamp                         200
+    YLine                        100
+    YLineColor                   YELLOW
+    YLineVisible                 No
+    Yoffset                      0
+end
+Thermometer
+    Name                         Thermometer0
+    Caption                      'Temperature (c)'
+    Color                        BLACK
+    ColorAfter                   0x000051
+    ColorBefore                  clRed
+    Direction                    Vertical
+    Font.Color                   WHITE
+    Font.Effects                 []
+    Font.Name                    Arial
+    Font.Size                    8
+    Font.Style                   []
+    Height                       172
+    Left                         371
+    Scale.Color                  BLACK
+    Scale.Decimals               0
+    Scale.Heightmax              14
+    Scale.Heightmin              8
+    Scale.Max                    40
+    Scale.Min                    -10
+    Scale.Offset                 20
+    Scale.Position               After
+    Scale.ScaleType              Linear
+    Scale.SmallStep              1
+    Scale.Step                   5
+    Scale.Visible                Yes
+    Setpoint.Bitmap              (None)
+    Setpoint.Color               BLUE
+    Setpoint.Shape               Line
+    Setpoint.Value               33
+    Setpoint.Visible             No
+    ShowCaption                  Yes
+    Top                          100
+    Value.Bitmap                 (None)
+    Value.Color                  clAqua
+    Value.Shape                  Line
+    Value.Value                  20
+    Value.Visible                Yes
+    Visible                      Yes
+    Width                        109
+    OnChanged                    ''
+end
+LedDigits
+    Name                         Leddigits0
+    Color                        BLACK
+    Decimals                     0
+    Digits                       2
+    Height                       40
+    LeadingZero                  Yes
+    Left                         0
+    OutlineColor                 BLACK
+    Palette.High                 clLime
+    Palette.Low                  0x005100
+    Top                          0
+    Visible                      Yes
+    Width                        60
+    OnChanged                    ''
+    OnTouchMoving                ''
+    OnTouchPressed               ''
+    OnTouchReleased              ''
+end
+LedDigits
+    Name                         Leddigits1
+    Color                        BLACK
+    Decimals                     0
+    Digits                       2
+    Height                       40
+    LeadingZero                  Yes
+    Left                         80
+    OutlineColor                 BLACK
+    Palette.High                 0xD5952B
+    Palette.Low                  0x482F0A
+    Top                          0
+    Visible                      Yes
+    Width                        60
+    OnChanged                    ''
+    OnTouchMoving                ''
+    OnTouchPressed               ''
+    OnTouchReleased              ''
+end
+Circle
+    Name                         Circle0
+    Color                        0xD1383C
+    Filled                       Yes
+    Rad                          2
+    X                            67
+    Y                            11
+end
+Circle
+    Name                         Circle1
+    Color                        0xD1383C
+    Filled                       Yes
+    Rad                          2
+    X                            67
+    Y                            31
+end
+UserButton
+    Name                         Userbutton3
+    Height                       24
+    Images                       Next-icon.png
+    Left                         456
+    Matrix                       -1
+    Momentary                    Yes
+    Stretch                      No
+    Top                          0
+    Width                        24
+    OnChanged                    Form1Activate
+end
+StaticText
+    Name                         Statictext1
+    AutoSize                     Yes
+    Caption                      'Magnetic Field'
+    Color                        BLACK
+    Font.Color                   WHITE
+    Font.Effects                 []
+    Font.Name                    Tahoma
+    Font.Size                    9
+    Font.Style                   []
+    Height                       14
+    Left                         0
+    Top                          104
+    Transparent                  Yes
+    Visible                      Yes
+    Width                        77
+    WordWrap                     Yes
+end
+StaticText
+    Name                         Statictext2
+    AutoSize                     Yes
+    Caption                      'Preassure (kPa)'
+    Color                        BLACK
+    Font.Color                   WHITE
+    Font.Effects                 []
+    Font.Name                    Tahoma
+    Font.Size                    9
+    Font.Style                   []
+    Height                       14
+    Left                         272
+    Top                          100
+    Transparent                  Yes
+    Visible                      Yes
+    Width                        89
+    WordWrap                     Yes
+end
+GSlider
+    Name                         Slider0
+    Bevel.BorderColor            clBtnFace
+    Bevel.BorderWidth            0
+    Bevel.InnerColor             BLACK
+    Bevel.InnerHighlight         clBtnHighlight
+    Bevel.InnerOutline           None
+    Bevel.InnerShadow            clBtnShadow
+    Bevel.InnerSpace             1
+    Bevel.InnerStyle             Lowered
+    Bevel.Innerwidth             2
+    Bevel.OuterColor             clBtnFace
+    Bevel.OuterHighlight         clBtnHighlight
+    Bevel.OuterOutline           Outer
+    Bevel.OuterShadow            clBtnShadow
+    Bevel.OuterSpace             0
+    Bevel.OuterStyle             Raised
+    Bevel.Outerwidth             1
+    Bevel.Visible                Yes
+    BorderColor                  clBtnFace
+    BorderWidth                  1
+    Color                        BLACK
+    Height                       23
+    Left                         304
+    Maxvalue                     100
+    Minvalue                     0
+    Orientation                  Horizontal
+    Palette.High                 0xEB15CB
+    Palette.Low                  0x9B1EAD
+    Spacing                      1
+    SolidFill                    Yes
+    TickWidth                    1
+    Top                          56
+    Visible                      Yes
+    Width                        166
+    OnChanged                    ''
+    OnChanging                   'Report Message'
+end
+StaticText
+    Name                         Statictext8
+    AutoSize                     Yes
+    Caption                      LED
+    Color                        BLACK
+    Font.Color                   WHITE
+    Font.Effects                 []
+    Font.Name                    Tahoma
+    Font.Size                    9
+    Font.Style                   []
+    Height                       14
+    Left                         304
+    Top                          40
+    Transparent                  Yes
+    Visible                      Yes
+    Width                        21
+    WordWrap                     Yes
+end
+StaticText
+    Name                         Statictext9
+    AutoSize                     Yes
+    Caption                      'Ying Yin'
+    Color                        BLACK
+    Font.Color                   WHITE
+    Font.Effects                 []
+    Font.Name                    Tahoma
+    Font.Size                    16
+    Font.Style                   []
+    Height                       25
+    Left                         188
+    Top                          8
+    Transparent                  Yes
+    Visible                      Yes
+    Width                        77
+    WordWrap                     Yes
+end
+UserButton
+    Name                         Userbutton7
+    Height                       32
+    Images                       plus.png\nplus_pressed.png
+    Left                         188
+    Matrix                       -1
+    Momentary                    Yes
+    Stretch                      No
+    Top                          85
+    Width                        32
+    OnChanged                    'Report Message'
+end
+UserButton
+    Name                         Userbutton8
+    Height                       32
+    Images                       minus.png\nminus_pressed.png
+    Left                         228
+    Matrix                       -1
+    Momentary                    Yes
+    Stretch                      No
+    Top                          85
+    Width                        32
+    OnChanged                    'Report Message'
+end
+AngularMeter
+    Name                         Angularmeter0
+    Analogue                     (None)
+    Angle                        40
+    AngleOffset                  280
+    Caption                      ''
+    CaptionXOffset               0
+    CaptionYOffset               0
+    CenterDotColor               clWhite
+    CenterDotWidth               2
+    Color                        BLACK
+    ColorZone1                   RED
+    ColorZone2                   LIME
+    ColorZone3                   ORANGE
+    Decimals                     0
+    Font.Color                   clWhite
+    Font.Effects                 []
+    Font.Name                    Tahoma
+    Font.Size                    8
+    Font.Style                   []
+    Height                       158
+    Labels                       10
+    LabelsFont.Color             clWhite
+    LabelsFont.Effects           []
+    LabelsFont.Name              Tahoma
+    LabelsFont.Size              8
+    LabelsFont.Style             []
+    LabelsOffset                 30
+    Left                         256
+    Maxvalue                     110
+    Minvalue                     50
+    NeedleBasewidth              8
+    NeedleColor                  clRed
+    NeedleLength                 -1
+    Percent1                     10
+    Percent2                     80
+    Radius                       -1
+    Spacing                      45
+    Ticks                        100
+    TicksColor                   clWhite
+    TicksEnlarge                 10
+    TicksMax                     14
+    TicksMin                     5
+    Timer                        (None)
+    Top                          114
+    Visible                      Yes
+    Width                        122
+    OnChanged                    ''
+end
+Strings
+    Name                         Strings1
+    Alignment                    Left
+    BGcolor                      BLACK
+    Height                       20
+    FGcolor                      WHITE
+    Font.Bold                    No
+    Font.CharSet                 ANSI
+    Font.Italic                  No
+    Font.Name                    '4D Font3 (8x12)'
+    Font.Opaque                  Yes
+    Font.Size                    12
+    Font.Strikethrough           No
+    Font.Underline               No
+    Left                         0
+    Strings                      Friday
+    StringsStyle                 Message
+    Top                          48
+    Visible                      Yes
+    Width                        64
+    OnChanged                    ''
+end
+Strings
+    Name                         Strings2
+    Alignment                    Left
+    BGcolor                      BLACK
+    Height                       20
+    FGcolor                      WHITE
+    Font.Bold                    No
+    Font.CharSet                 ANSI
+    Font.Italic                  No
+    Font.Name                    '4D Font3 (8x12)'
+    Font.Opaque                  Yes
+    Font.Size                    12
+    Font.Strikethrough           No
+    Font.Underline               No
+    Left                         70
+    Strings                      December\n
+    StringsStyle                 Message
+    Top                          48
+    Visible                      Yes
+    Width                        70
+    OnChanged                    ''
+end
+Strings
+    Name                         Strings3
+    Alignment                    Left
+    BGcolor                      BLACK
+    Height                       20
+    FGcolor                      WHITE
+    Font.Bold                    No
+    Font.CharSet                 ANSI
+    Font.Italic                  No
+    Font.Name                    '4D Font3 (8x12)'
+    Font.Opaque                  Yes
+    Font.Size                    12
+    Font.Strikethrough           No
+    Font.Underline               No
+    Left                         152
+    Strings                      31
+    StringsStyle                 Message
+    Top                          48
+    Visible                      Yes
+    Width                        40
+    OnChanged                    ''
+end
+Strings
+    Name                         Strings4
+    Alignment                    Left
+    BGcolor                      BLACK
+    Height                       20
+    FGcolor                      WHITE
+    Font.Bold                    No
+    Font.CharSet                 ANSI
+    Font.Italic                  No
+    Font.Name                    '4D Font3 (8x12)'
+    Font.Opaque                  Yes
+    Font.Size                    12
+    Font.Strikethrough           No
+    Font.Underline               No
+    Left                         200
+    Strings                      1999
+    StringsStyle                 Message
+    Top                          48
+    Visible                      Yes
+    Width                        40
+    OnChanged                    'Report Message'
+end
+Form
+    Name                         Form1
+    Bgtype                       Color
+    Color                        BLACK
+    Image                        (None)
+    Source.Height                0
+    Source.Left                  0
+    Source.Top                   0
+    Source.Width                 0
+    OnActivate                   ''
+    OnCreate                     ''
+    OnRepeat                     ''
+    OnTouchMoving                ''
+    OnTouchPressed               ''
+    OnTouchReleased              ''
+end
+Strings
+    Name                         Strings0
+    Alignment                    Left
+    BGcolor                      BLUE
+    Height                       16
+    FGcolor                      WHITE
+    Font.Bold                    No
+    Font.CharSet                 ANSI
+    Font.Italic                  No
+    Font.Name                    '4D Font3 (8x12)'
+    Font.Opaque                  Yes
+    Font.Size                    12
+    Font.Strikethrough           No
+    Font.Underline               No
+    Left                         0
+    Strings                      'Valid Location Fix'
+    StringsStyle                 Message
+    Top                          72
+    Visible                      Yes
+    Width                        160
+    OnChanged                    ''
+end
+UserButton
+    Name                         Userbutton0
+    Height                       24
+    Images                       Next-icon.png
+    Left                         456
+    Matrix                       -1
+    Momentary                    Yes
+    Stretch                      No
+    Top                          0
+    Width                        24
+    OnChanged                    Form2Activate
+end
+UserButton
+    Name                         Userbutton1
+    Height                       35
+    Images                       ''
+    Left                         462
+    Matrix                       -1
+    Momentary                    Yes
+    Stretch                      No
+    Top                          32
+    Width                        18
+    OnChanged                    ''
+end
+UserButton
+    Name                         Userbutton2
+    Height                       24
+    Images                       Previous-icon.png
+    Left                         456
+    Matrix                       -1
+    Momentary                    Yes
+    Stretch                      No
+    Top                          28
+    Width                        24
+    OnChanged                    Form0Activate
+end
+StaticText
+    Name                         Statictext10
+    AutoSize                     Yes
+    Caption                      'GPS Data'
+    Color                        BLACK
+    Font.Color                   WHITE
+    Font.Effects                 []
+    Font.Name                    Tahoma
+    Font.Size                    24
+    Font.Style                   []
+    Height                       50
+    Left                         0
+    Top                          16
+    Transparent                  Yes
+    Visible                      Yes
+    Width                        200
+    WordWrap                     Yes
+end
+Strings
+    Name                         Strings5
+    Alignment                    Left
+    BGcolor                      BLUE
+    Height                       16
+    FGcolor                      WHITE
+    Font.Bold                    No
+    Font.CharSet                 ANSI
+    Font.Italic                  No
+    Font.Name                    '4D Font3 (8x12)'
+    Font.Opaque                  Yes
+    Font.Size                    12
+    Font.Strikethrough           No
+    Font.Underline               No
+    Left                         0
+    Strings                      'Number of Satalites'
+    StringsStyle                 Message
+    Top                          92
+    Visible                      Yes
+    Width                        160
+    OnChanged                    ''
+end
+Strings
+    Name                         Strings6
+    Alignment                    Left
+    BGcolor                      BLUE
+    Height                       16
+    FGcolor                      WHITE
+    Font.Bold                    No
+    Font.CharSet                 ANSI
+    Font.Italic                  No
+    Font.Name                    '4D Font3 (8x12)'
+    Font.Opaque                  Yes
+    Font.Size                    12
+    Font.Strikethrough           No
+    Font.Underline               No
+    Left                         0
+    Strings                      Latitude
+    StringsStyle                 Message
+    Top                          112
+    Visible                      Yes
+    Width                        160
+    OnChanged                    ''
+end
+Strings
+    Name                         Strings7
+    Alignment                    Left
+    BGcolor                      BLUE
+    Height                       16
+    FGcolor                      WHITE
+    Font.Bold                    No
+    Font.CharSet                 ANSI
+    Font.Italic                  No
+    Font.Name                    '4D Font3 (8x12)'
+    Font.Opaque                  Yes
+    Font.Size                    12
+    Font.Strikethrough           No
+    Font.Underline               No
+    Left                         172
+    Strings                      False
+    StringsStyle                 Message
+    Top                          72
+    Visible                      Yes
+    Width                        160
+    OnChanged                    ''
+end
+Strings
+    Name                         Strings8
+    Alignment                    Left
+    BGcolor                      BLUE
+    Height                       16
+    FGcolor                      WHITE
+    Font.Bold                    No
+    Font.CharSet                 ANSI
+    Font.Italic                  No
+    Font.Name                    '4D Font3 (8x12)'
+    Font.Opaque                  Yes
+    Font.Size                    12
+    Font.Strikethrough           No
+    Font.Underline               No
+    Left                         170
+    Strings                      0
+    StringsStyle                 Message
+    Top                          92
+    Visible                      Yes
+    Width                        160
+    OnChanged                    ''
+end
+Strings
+    Name                         Strings9
+    Alignment                    Left
+    BGcolor                      BLUE
+    Height                       16
+    FGcolor                      WHITE
+    Font.Bold                    No
+    Font.CharSet                 ANSI
+    Font.Italic                  No
+    Font.Name                    '4D Font3 (8x12)'
+    Font.Opaque                  Yes
+    Font.Size                    12
+    Font.Strikethrough           No
+    Font.Underline               No
+    Left                         170
+    Strings                      ?
+    StringsStyle                 Message
+    Top                          112
+    Visible                      Yes
+    Width                        160
+    OnChanged                    ''
+end
+Strings
+    Name                         Strings10
+    Alignment                    Left
+    BGcolor                      BLUE
+    Height                       16
+    FGcolor                      WHITE
+    Font.Bold                    No
+    Font.CharSet                 ANSI
+    Font.Italic                  No
+    Font.Name                    '4D Font3 (8x12)'
+    Font.Opaque                  Yes
+    Font.Size                    12
+    Font.Strikethrough           No
+    Font.Underline               No
+    Left                         0
+    Strings                      Longitude
+    StringsStyle                 Message
+    Top                          132
+    Visible                      Yes
+    Width                        160
+    OnChanged                    ''
+end
+Strings
+    Name                         Strings11
+    Alignment                    Left
+    BGcolor                      BLUE
+    Height                       15
+    FGcolor                      WHITE
+    Font.Bold                    No
+    Font.CharSet                 ANSI
+    Font.Italic                  No
+    Font.Name                    '4D Font3 (8x12)'
+    Font.Opaque                  Yes
+    Font.Size                    12
+    Font.Strikethrough           No
+    Font.Underline               No
+    Left                         170
+    Strings                      ?
+    StringsStyle                 Message
+    Top                          132
+    Visible                      Yes
+    Width                        160
+    OnChanged                    ''
+end
+Strings
+    Name                         Strings12
+    Alignment                    Left
+    BGcolor                      BLUE
+    Height                       16
+    FGcolor                      WHITE
+    Font.Bold                    No
+    Font.CharSet                 ANSI
+    Font.Italic                  No
+    Font.Name                    '4D Font3 (8x12)'
+    Font.Opaque                  Yes
+    Font.Size                    12
+    Font.Strikethrough           No
+    Font.Underline               No
+    Left                         0
+    Strings                      'Altitude (Meters)'
+    StringsStyle                 Message
+    Top                          152
+    Visible                      Yes
+    Width                        160
+    OnChanged                    ''
+end
+Strings
+    Name                         Strings13
+    Alignment                    Left
+    BGcolor                      BLUE
+    Height                       16
+    FGcolor                      WHITE
+    Font.Bold                    No
+    Font.CharSet                 ANSI
+    Font.Italic                  No
+    Font.Name                    '4D Font3 (8x12)'
+    Font.Opaque                  Yes
+    Font.Size                    12
+    Font.Strikethrough           No
+    Font.Underline               No
+    Left                         170
+    Strings                      0
+    StringsStyle                 Message
+    Top                          152
+    Visible                      Yes
+    Width                        160
+    OnChanged                    'Report Message'
+end
+Form
+    Name                         Form2
+    Bgtype                       Color
+    Color                        BLACK
+    Image                        (None)
+    Source.Height                0
+    Source.Left                  0
+    Source.Top                   0
+    Source.Width                 0
+    OnActivate                   ''
+    OnCreate                     ''
+    OnRepeat                     ''
+    OnTouchMoving                ''
+    OnTouchPressed               ''
+    OnTouchReleased              ''
+end
+StaticText
+    Name                         Statictext0
+    AutoSize                     Yes
+    Caption                      'Ying Yin'
+    Color                        BLACK
+    Font.Color                   WHITE
+    Font.Effects                 []
+    Font.Name                    Tahoma
+    Font.Size                    48
+    Font.Style                   []
+    Height                       94
+    Left                         100
+    Top                          64
+    Transparent                  Yes
+    Visible                      Yes
+    Width                        250
+    WordWrap                     Yes
+end
+UserButton
+    Name                         Userbutton4
+    Height                       24
+    Images                       Previous-icon.png
+    Left                         456
+    Matrix                       -1
+    Momentary                    Yes
+    Stretch                      No
+    Top                          28
+    Width                        24
+    OnChanged                    Form1Activate
+end
+Video
+    Name                         Video0
+    Frames.First                 0
+    Frames.Last                  30
+    Frames.FrameDelay            80
+    Height                       80
+    Left                         328
+    Source.Height                300
+    Source.Left                  0
+    Source.Top                   0
+    Source.Width                 300
+    Visible                      Yes
+    Top                          76
+    Video                        gif_zergling_lick_black.gif
+    Width                        80
+    OnChanged                    'Report Message'
+    OnTouchMoving                ''
+    OnTouchPressed               ''
+    OnTouchReleased              ''
+end
+StaticText
+    Name                         Statictext3
+    AutoSize                     Yes
+    Caption                      ❦
+    Color                        BLACK
+    Font.Color                   WHITE
+    Font.Effects                 []
+    Font.Name                    Tahoma
+    Font.Size                    36
+    Font.Style                   []
+    Height                       58
+    Left                         208
+    Top                          148
+    Transparent                  Yes
+    Visible                      Yes
+    Width                        48
+    WordWrap                     Yes
+end
+StaticText
+    Name                         Statictext4
+    AutoSize                     Yes
+    Caption                      '(╯°□°）╯︵ ┻━┻       Flipping tables since the 80''s'
+    Color                        BLACK
+    Font.Color                   WHITE
+    Font.Effects                 []
+    Font.Name                    Tahoma
+    Font.Size                    9
+    Font.Style                   []
+    Height                       26
+    Left                         92
+    Top                          224
+    Transparent                  Yes
+    Visible                      Yes
+    Width                        286
+    WordWrap                     Yes
+end

@@ -1,0 +1,395 @@
+#include <Wire.h>
+#include <TinyGPS++.h>
+#include <genieArduino.h>
+#include <Adafruit_MPL115A2.h>
+#include "RTClib.h"
+
+
+
+#define RESETLINE 4
+
+#define MAGNETOMETER_ADDR 0x1E
+#define SCOPE_MAX 75
+
+//Magnetometer
+#define MAGNETOMETER_ZOOM_OUT 8
+#define MAGNETOMETER_ZOOM_IN 7
+int8_t magnetometer_gain = 1;
+//LED
+#define LED_PIN 9
+//Temperature and Preassure
+
+
+Adafruit_MPL115A2 mpl115a2;
+RTC_DS1307 rtc;
+
+static const int RXPin = 5, TXPin = 6;
+static const uint32_t GPSBaud = 38400;
+
+TinyGPSPlus gps;
+Genie genie;
+
+char day_string[3];
+char year_string[5];
+
+char gps_num_satalites[4];
+char gps_lat_string[20];
+char gps_lon_string[20];
+char gps_altitude[20];
+
+
+#define VIDEO_MAX 30
+#define VIDEO_TIMEOUT 80
+uint8_t video_index = 0;
+
+static int prev_dow = -1;
+static int prev_month = -1;
+static int prev_day = -1;
+static int prev_year = -1;
+
+
+static int prev_gps_valid = -1;
+// The serial connection to the GPS device
+
+void setup()
+{
+  DateTime now;
+  Serial.begin(115200);
+  Serial1.begin(115200);
+  
+  genie.Begin(Serial1);   // Use Serial0 for talking to the Genie Library, and to the 4D Systems display
+  genie.AttachEventHandler(myGenieEventHandler); // Attach the user function Event Handler for processing events
+  
+  pinMode(RESETLINE, OUTPUT);
+  
+  
+  digitalWrite(RESETLINE, 1);  // Reset the Display via D4
+  delay(100);
+  digitalWrite(RESETLINE, 0);  // unReset the Display via D4
+  delay (5000); //let the display start up after the reset (This is important)
+  genie.WriteContrast(15); // 1 = Display ON, 0 = Display OFF.
+  //For uLCD43, uLCD-70DT, and uLCD-35DT, use 0-15 for Brightness Control, where 0 = Display OFF, though to 15 = Max Brightness ON.
+  //genie.WriteStr(0, GENIE_VERSION);
+  
+  
+  //Serial.println(F("Happy Birthday Ying!"));
+  //Serial.println(F("Credits:"));
+  //Serial.println(F("\tGPS Code by Mikal Hart"));  
+  
+  //Setup GPS
+  Serial3.begin(GPSBaud);
+  
+  //Setup Magnetometer
+  Wire.begin();
+  //Put the HMC5883 IC into the correct operating mode
+  Wire.beginTransmission(MAGNETOMETER_ADDR); //open communication with HMC5883
+  Wire.write(0x02); //select mode register
+  Wire.write(0x00); //continuous measurement mode
+  Wire.endTransmission();
+  
+  Wire.beginTransmission(MAGNETOMETER_ADDR);
+  Wire.write(0x01); //select register 3, X MSB register
+  Wire.write(0x00);
+  Wire.endTransmission();  
+  
+  //LED
+  pinMode(LED_PIN, OUTPUT);
+  analogWrite(LED_PIN, 255);
+  
+  //Temperature Preassure
+  mpl115a2.begin();
+  
+  //RTC
+  rtc.begin();
+  now = rtc.now();
+  snprintf(day_string, sizeof(day_string), "%d", now.day());
+  snprintf(year_string, sizeof(year_string), "%d", now.year());  
+  //genie.WriteObject(GENIE_OBJ_TIMER, 0, 0);
+  
+
+}
+
+
+
+void loop(){
+ 
+  static long waitPeriod = millis();
+  static long video_wait = millis();
+  update_gps();
+  update_magnetometer();
+
+
+
+  
+  if (millis() >= video_wait){
+    video_wait = millis() + VIDEO_TIMEOUT;
+    if (video_index >= VIDEO_MAX){
+      video_index = 0;
+    }
+    else {
+      video_index++;
+    }
+    //Start the video
+    genie.WriteObject(GENIE_OBJ_VIDEO, 0, video_index);
+  }
+  
+  
+  if (millis() >= waitPeriod){
+    waitPeriod = millis() + 1000; // rerun this code to update Cool Gauge and Slider in another 50ms time.
+    //genie.WriteStr(0, "100");
+    update_pt();
+    update_datetime();
+  }
+  genie.DoEvents(); // This calls the library each loop to process the queued responses from the display
+}
+
+void update_gps(){
+
+  while (Serial3.available() > 0){
+    if (gps.encode(Serial3.read())){
+      if (gps.location.isValid()){
+
+        snprintf(gps_num_satalites, sizeof(gps_num_satalites), "%d", gps.satellites.value());
+        dtostrf(gps.location.lat(), 10, 6, gps_lat_string);
+        //snprintf(gps_lat_string, sizeof(gps_lat_string), "%f", gps.location.lat());
+        dtostrf(gps.location.lng(), 10, 6, gps_lon_string);
+        //snprintf(gps_lon_string, sizeof(gps_lon_string), "f", gps.location.lng());
+        dtostrf(gps.altitude.meters(), 10, 6, gps_altitude);
+        //snprintf(gps_altitude, sizeof(gps_altitude), "%f", gps.altitude.meters());
+        
+//        if (prev_gps_valid != gps.location.isValid()){
+          genie.WriteStr(7, "True");
+//        }
+        genie.WriteStr(8, gps_num_satalites);
+        genie.WriteStr(9, gps_lat_string);
+        genie.WriteStr(11, gps_lon_string);
+        genie.WriteStr(13, gps_altitude);
+        prev_gps_valid = gps.location.isValid();        
+      }
+      else {
+//        if (prev_gps_valid != gps.location.isValid()){
+          genie.WriteStr(7, "False");
+//        }
+        prev_gps_valid = gps.location.isValid();        
+      }
+    }
+  }
+}
+
+
+
+void update_magnetometer(){
+  int x,y,z; //triple axis data  
+  uint16_t zval;
+
+  //Tell the HMC5883 where to begin reading data
+  Wire.beginTransmission(MAGNETOMETER_ADDR);
+  Wire.write(0x03); //select register 3, X MSB register
+  Wire.endTransmission();
+  
+  
+  
+  
+ //Read data from each axis, 2 registers per axis
+  Wire.requestFrom(MAGNETOMETER_ADDR, 6);
+  if(6<=Wire.available()){
+    x = Wire.read()<<8; //X msb
+    x |= Wire.read(); //X lsb
+    z = Wire.read()<<8; //Z msb
+    z |= Wire.read(); //Z lsb
+    y = Wire.read()<<8; //Y msb
+    y |= Wire.read(); //Y lsb
+  }
+  
+  
+  
+  z += 2048;
+
+  zval = map(z, 0, 4096, 0, SCOPE_MAX);
+  //Serial.print("Z = ");
+  //Serial.println(z);
+  if (zval > SCOPE_MAX) {
+    zval = SCOPE_MAX;
+  }
+  if (zval < 0){
+    zval = 0;
+  }
+
+ 
+  
+  genie.WriteObject(GENIE_OBJ_SCOPE, 0, zval);
+
+}
+
+void update_pt(){
+  float pressureKPA = 0, temperatureC = 0;  
+  uint16_t p;
+  uint16_t t;
+  mpl115a2.getPT(&pressureKPA, &temperatureC);
+  p = (uint16_t) pressureKPA;
+  t = ((uint16_t) (temperatureC + .5));
+  Serial.print("temp: ");
+  Serial.println(t);
+  Serial.print("preassure: ");
+  Serial.println(p);
+  t = map (t, -10, 40, 0, 50);
+  p = map (p, 50, 110, 0, 60);
+  
+  genie.WriteObject(GENIE_OBJ_THERMOMETER, 0, t);
+  genie.WriteObject(GENIE_OBJ_ANGULAR_METER, 0, p);
+  
+  
+  
+}
+
+void update_datetime(){
+
+  DateTime now = rtc.now();
+  genie.WriteObject(GENIE_OBJ_LED_DIGITS, 0, now.hour());
+  genie.WriteObject(GENIE_OBJ_LED_DIGITS, 1, now.minute());
+//  if (prev_dow != now.dayOfWeek()){
+    switch (now.dayOfWeek()){
+      case (0):  //Sunday
+        genie.WriteStr(1, "Sunday");    
+        break;
+      case (1):
+        genie.WriteStr(1, "Monday");    
+        break;
+      case (2):
+        genie.WriteStr(1, "Tuesday");    
+        break;
+      case (3):
+        genie.WriteStr(1, "Wednesday");    
+        break;
+      case (4):
+        genie.WriteStr(1, "Thursday");    
+        break;
+      case (5):
+        genie.WriteStr(1, "Friday");    
+        break;
+      case (6):
+        genie.WriteStr(1, "Saturday");    
+        break;
+      default:
+        genie.WriteStr(1, "WTF");
+        break;
+    }
+    prev_dow = now.dayOfWeek();
+//  }
+
+//  if (prev_month != now.month()){
+    switch (now.month()){
+      case (1):
+        genie.WriteStr(2, "January");
+        break;
+      case (2):
+        genie.WriteStr(2, "February");
+        break;
+      case (3):
+        genie.WriteStr(2, "March");    
+        break;
+      case (4):
+        genie.WriteStr(2, "April");    
+        break;
+      case (5):
+        genie.WriteStr(2, "May");    
+        break;
+      case (6):
+        genie.WriteStr(2, "June");    
+        break;
+      case (7):
+        genie.WriteStr(2, "July");    
+        break;
+      case (8):
+        genie.WriteStr(2, "August");    
+        break;
+      case (9):
+        genie.WriteStr(2, "September");    
+        break;
+      case (10):
+        genie.WriteStr(2, "October");    
+        break;
+      case (11):
+        genie.WriteStr(2, "November");    
+        break;
+      case (12):
+        genie.WriteStr(2, "December");    
+        break;
+      default:
+        genie.WriteStr(2, "End of days");
+    }
+    prev_month = now.month();
+//  }
+
+
+//  if (prev_day != now.day()){
+    snprintf(day_string, sizeof(day_string), "%d", now.day());
+    genie.WriteStr(3, day_string);
+    prev_day = now.day();
+//  }
+
+//  if (prev_year != now.year()){
+    snprintf(year_string, sizeof(year_string), "%d", now.year());
+    genie.WriteStr(4, year_string);  
+    prev_year = now.year();    
+//  }
+
+}
+
+// LONG HAND VERSION, MAYBE MORE VISIBLE AND MORE LIKE VERSION 1 OF THE LIBRARY
+void myGenieEventHandler(void)
+{
+  genieFrame Event;
+  genie.DequeueEvent(&Event);
+  //Serial.println("Dequeue event!");
+
+  int slider_val = 0;
+
+  //If the cmd received is from a Reported Event (Events triggered from the Events tab of Workshop4 objects)
+  if (Event.reportObject.cmd == GENIE_REPORT_EVENT){
+    switch (Event.reportObject.object){
+      case (GENIE_OBJ_SLIDER):
+      if (Event.reportObject.index == 0){
+        analogWrite(LED_PIN, map(genie.GetEventData(&Event), 0, 100, 255, 0));
+      }
+      break;
+      case (GENIE_OBJ_FORM):
+        prev_dow = -1;
+        prev_month = -1;
+        prev_day = -1;
+        prev_year = -1;
+          
+        prev_gps_valid = -1;      
+      break;
+      case (GENIE_OBJ_USERBUTTON):
+      //Serial.print("Button: ");
+      //Serial.println(Event.reportObject.index);
+      if (Event.reportObject.index == MAGNETOMETER_ZOOM_OUT){
+        if (magnetometer_gain > 0){
+          magnetometer_gain--;
+          Wire.beginTransmission(MAGNETOMETER_ADDR);
+          Wire.write(0x02);
+          Wire.write(magnetometer_gain << 5);
+          Wire.endTransmission();          
+        }
+      }
+      else if (Event.reportObject.index == MAGNETOMETER_ZOOM_OUT){
+        if (magnetometer_gain < 7){
+          magnetometer_gain++;
+          Wire.beginTransmission(MAGNETOMETER_ADDR);
+          Wire.write(0x02);
+          Wire.write(magnetometer_gain << 5);
+          Wire.endTransmission();          
+        }          
+      }
+      break;
+    }
+  }
+
+  //If the cmd received is from a Reported Object, which occurs if a Read Object (genie.ReadOject) is requested in the main code, reply processed here.
+  if (Event.reportObject.cmd == GENIE_REPORT_OBJ)
+  {
+  }
+}
+
+

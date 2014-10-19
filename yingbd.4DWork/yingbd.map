@@ -1,0 +1,17 @@
+linked : 17    main 045C
+linked : 16    DoGFXObjects 0C66
+linked : 15    UpdateObjects 0CA4
+linked : 14    ActivateForm 0F2F
+linked : 13    ledDigitsDisplay 11DA
+linked : 12    TurnOffButtons 1314
+linked : 11    WriteObject 139C
+linked : 10    doScope 14FE
+linked : 9     drawScope 15C6
+linked : 8     addressTraces 1711
+linked : 7     Graticule 178C
+linked : 6     gfx_Scope 17D3
+linked : 5     ReadObject 1AB9
+linked : 4     TMul 1B98
+linked : 3     seroutOcs 1BD1
+linked : 2     seroutCS 1BE2
+linked : 1     PrintStrings 1BF5
