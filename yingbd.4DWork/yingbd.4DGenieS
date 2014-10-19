@@ -1,6 +1,6 @@
 #platform "uLCD-43PT"
 
-// generated 9/23/2014 8:25:46 PM
+// generated 10/18/2014 9:18:43 PM
 
 #MODE RUNFLASH
 
@@ -116,15 +116,15 @@
     REPORT_OBJ      5
     REPORT_EVENT    7
 // End P1.inc
-    nObjects        23
+    nObjects        25
     nInputs         15
     ANITIMERS       0
 #END
 
 #DATA
-    word formstidx 0, 14, 18
-    word formenidx 14, 18, 23
-    word IPControls -1, -1, -1, -1, -1, 0, -1, -1, 44, -1, -1, 88, 132, -1, 176, 220, 242, -1, -1, 286
+    word formstidx 0, 16, 20
+    word formenidx 16, 20, 25
+    word IPControls -1, -1, -1, -1, -1, 0, -1, -1, 44, -1, -1, 88, 132, -1, -1, -1, 176, 220, 242, -1, -1, 286
     word IPData tUserButton, 1, -1, -1, -1, -1, -1, -1, 0, 22, 8,
                 OT_ACTIVATE, 10, 1, 0, 18, 0, 0, 0, 0, 0, 0,
                 tGSlider, 1, 312, 149, 100, 439, -1, -1, 66, 0, 2,
@@ -161,7 +161,7 @@
     word oGSliders 1, iSlider0
     word oTrackbars 0
     word oWinButtons 0
-    word oAngularmeters 1, iAngularmeter0
+    word oAngularmeters 2, iAngularmeter0, iAngularmeter1
     word oCoolgauges 0
     word oCustomdigitss 0
     word oForms 3, -1, -1, -1
@@ -175,7 +175,7 @@
     word oThermometers 1, iThermometer0
     word oUserleds 0
     word oVideos 1, iVideo0
-    word oStaticTexts 11, iStatictext0, iStatictext1, iStatictext2, iStatictext3, iStatictext4, -1, -1, -1, iStatictext8, iStatictext9, iStatictext10
+    word oStaticTexts 11, iStatictext0, iStatictext1, iStatictext2, iStatictext3, iStatictext4, iStatictext5, -1, -1, iStatictext8, iStatictext9, iStatictext10
     word oSpectrums 0
     word oScopes 1
     word oTanks 0
@@ -192,14 +192,14 @@
     word kKeyboardKeystrokes -1
     word OPDataL 0, 2, 1, 30, 0,
                 80, 2, 1, 30, 0
-    word OPDataSc BLACK, 0x05C0, 1, 10, 10, 0, 10, 122, LIME, BLUE, RED, FUCHSIA, 1, 256, 0, 200, 222, YELLOW, 0, 0, 255, 271, 256, 271
+    word OPDataSc BLACK, 0x05C0, 1, 10, 10, 0, 10, 142, LIME, BLUE, RED, FUCHSIA, 1, 188, 0, 200, 242, YELLOW, 0, 0, 187, 271, 188, 271
 #END
 
 var hFonts[14] ;
 var stringsCV[14] := [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], hstrings ;
 var scTracebuf[8] ;   // each scope has 8 entries
 var scCurpos[1] := [0] ;
-var sc0Oldval1[257], sc0Newval1[257]  ;
+var sc0Oldval1[189], sc0Newval1[189]  ;
 // Start P2.inc
 var oObjects[MaxTotObjects+1] ;                 // address of objects
 var curform ;
