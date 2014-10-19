@@ -100,7 +100,6 @@ void setup() {
   now = rtc.now();
   snprintf(day_string, sizeof(day_string), "%d", now.day());
   snprintf(year_string, sizeof(year_string), "%d", now.year());  
-  //genie.WriteObject(GENIE_OBJ_TIMER, 0, 0);
 }
 
 void loop(){ 
@@ -108,7 +107,8 @@ void loop(){
   static long video_wait = millis();
   update_gps();
   update_magnetometer();
-
+  update_light_sensor();
+  
   if (millis() >= video_wait){
     video_wait = millis() + VIDEO_TIMEOUT;
     if (video_index >= VIDEO_MAX){
@@ -127,6 +127,14 @@ void loop(){
     update_datetime();
   }
   genie.DoEvents(); // This calls the library each loop to process the queued responses from the display
+}
+
+void update_light_sensor() {
+  int light_sensor_value = analogRead(A0);
+  Serial.print("light sensor: ");
+  Serial.println(light_sensor_value);
+  light_sensor_value = map(light_sensor_value, 1023, 0, 0, 100);
+  genie.WriteObject(GENIE_OBJ_GAUGE, 0, light_sensor_value); 
 }
 
 void update_gps(){
