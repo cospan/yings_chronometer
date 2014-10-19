@@ -1,4 +1,4 @@
-// File generated 10/18/2014 9:18:36 PM
+// File generated 10/18/2014 11:51:57 PM
 // Warning! This is a generated file, any manual changes will be
 // lost during the next generation.
 
@@ -40,23 +40,25 @@
     iUserbutton3    // offset 0x16C800
     iStatictext1    // offset 0x16D200
     iStatictext2    // offset 0x16DE00
-    iSlider0        // offset 0x16E800
-    iStatictext8    // offset 0x22AE00
-    iStatictext9    // offset 0x22B200
-    iUserbutton7    // offset 0x22C200
-    iUserbutton8    // offset 0x22D400
-    iAngularmeter0  // offset 0x22E600
-    iAngularmeter1  // offset 0x36A200
-    iStatictext5    // offset 0x575000
-    iUserbutton0    // offset 0x575E00
-    iUserbutton1    // offset 0x576800
-    iUserbutton2    // offset 0x577200
-    iStatictext10   // offset 0x577C00
-    iStatictext0    // offset 0x57CC00
-    iUserbutton4    // offset 0x588400
-    iVideo0         // offset 0x588E00
-    iStatictext3    // offset 0x5E9E00
-    iStatictext4    // offset 0x5EB400
+    iSlider0        // offset 0x16EC00
+    iStatictext8    // offset 0x202C00
+    iStatictext9    // offset 0x203000
+    iUserbutton7    // offset 0x204000
+    iUserbutton8    // offset 0x205200
+    iAngularmeter0  // offset 0x206400
+    iAngularmeter1  // offset 0x342000
+    iStatictext5    // offset 0x54CE00
+    iGauge0         // offset 0x54DC00
+    iStatictext6    // offset 0x5E1C00
+    iUserbutton0    // offset 0x5E2000
+    iUserbutton1    // offset 0x5E2A00
+    iUserbutton2    // offset 0x5E3400
+    iStatictext10   // offset 0x5E3E00
+    iStatictext0    // offset 0x5E6800
+    iUserbutton4    // offset 0x5EF400
+    iVideo0         // offset 0x5EFE00
+    iStatictext3    // offset 0x650E00
+    iStatictext4    // offset 0x652400
 #END
 
 #constant  Strings1StartH   0x0
