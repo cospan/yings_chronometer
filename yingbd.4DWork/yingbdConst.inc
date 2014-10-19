@@ -1,4 +1,4 @@
-// File generated 9/23/2014 8:25:41 PM
+// File generated 10/18/2014 9:18:36 PM
 // Warning! This is a generated file, any manual changes will be
 // lost during the next generation.
 
@@ -33,28 +33,30 @@
 // object indexes into ImageControl
 #CONST
     iThermometer0   // offset 0x0
-    iLeddigits0     // offset 0x1D2E00
-    iiLeddigits0    // offset 0x1D4200
-    iLeddigits1     // offset 0x1D9800
-    iiLeddigits1    // offset 0x1DAC00
-    iUserbutton3    // offset 0x1E0200
-    iStatictext1    // offset 0x1E0C00
-    iStatictext2    // offset 0x1E1600
-    iSlider0        // offset 0x1E2000
-    iStatictext8    // offset 0x29E600
-    iStatictext9    // offset 0x29EA00
-    iUserbutton7    // offset 0x29FA00
-    iUserbutton8    // offset 0x2A0C00
-    iAngularmeter0  // offset 0x2A1E00
-    iUserbutton0    // offset 0x4E0200
-    iUserbutton1    // offset 0x4E0C00
-    iUserbutton2    // offset 0x4E1600
-    iStatictext10   // offset 0x4E2000
-    iStatictext0    // offset 0x4E4A00
-    iUserbutton4    // offset 0x4F0200
-    iVideo0         // offset 0x4F0C00
-    iStatictext3    // offset 0x551C00
-    iStatictext4    // offset 0x553200
+    iLeddigits0     // offset 0x15F400
+    iiLeddigits0    // offset 0x160800
+    iLeddigits1     // offset 0x165E00
+    iiLeddigits1    // offset 0x167200
+    iUserbutton3    // offset 0x16C800
+    iStatictext1    // offset 0x16D200
+    iStatictext2    // offset 0x16DE00
+    iSlider0        // offset 0x16E800
+    iStatictext8    // offset 0x22AE00
+    iStatictext9    // offset 0x22B200
+    iUserbutton7    // offset 0x22C200
+    iUserbutton8    // offset 0x22D400
+    iAngularmeter0  // offset 0x22E600
+    iAngularmeter1  // offset 0x36A200
+    iStatictext5    // offset 0x575000
+    iUserbutton0    // offset 0x575E00
+    iUserbutton1    // offset 0x576800
+    iUserbutton2    // offset 0x577200
+    iStatictext10   // offset 0x577C00
+    iStatictext0    // offset 0x57CC00
+    iUserbutton4    // offset 0x588400
+    iVideo0         // offset 0x588E00
+    iStatictext3    // offset 0x5E9E00
+    iStatictext4    // offset 0x5EB400
 #END
 
 #constant  Strings1StartH   0x0
