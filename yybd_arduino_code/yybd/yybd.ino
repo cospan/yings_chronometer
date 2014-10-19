@@ -2,32 +2,33 @@
 #include <TinyGPS++.h>
 #include <genieArduino.h>
 #include <Adafruit_MPL115A2.h>
+#include <Sensirion.h>
 #include "RTClib.h"
-
-
 
 #define RESETLINE 4
 
 #define MAGNETOMETER_ADDR 0x1E
 #define SCOPE_MAX 75
 
-//Magnetometer
+// Magnetometer
 #define MAGNETOMETER_ZOOM_OUT 8
 #define MAGNETOMETER_ZOOM_IN 7
 int8_t magnetometer_gain = 1;
-//LED
+// LED
 #define LED_PIN 9
-//Temperature and Preassure
-
-
+// Temperature and Preassure
 Adafruit_MPL115A2 mpl115a2;
 RTC_DS1307 rtc;
+// SHT11: temperature, humidity, dewpoint
+const uint8_t dataPin  =  2;
+const uint8_t clockPin =  3;
 
 static const int RXPin = 5, TXPin = 6;
 static const uint32_t GPSBaud = 38400;
 
 TinyGPSPlus gps;
 Genie genie;
+Sensirion sht = Sensirion(dataPin, clockPin);
 
 char day_string[3];
 char year_string[5];
@@ -36,7 +37,6 @@ char gps_num_satalites[4];
 char gps_lat_string[20];
 char gps_lon_string[20];
 char gps_altitude[20];
-
 
 #define VIDEO_MAX 30
 #define VIDEO_TIMEOUT 80
@@ -47,12 +47,10 @@ static int prev_month = -1;
 static int prev_day = -1;
 static int prev_year = -1;
 
-
 static int prev_gps_valid = -1;
 // The serial connection to the GPS device
 
-void setup()
-{
+void setup() {
   DateTime now;
   Serial.begin(115200);
   Serial1.begin(115200);
@@ -62,7 +60,6 @@ void setup()
   
   pinMode(RESETLINE, OUTPUT);
   
-  
   digitalWrite(RESETLINE, 1);  // Reset the Display via D4
   delay(100);
   digitalWrite(RESETLINE, 0);  // unReset the Display via D4
@@ -70,7 +67,6 @@ void setup()
   genie.WriteContrast(15); // 1 = Display ON, 0 = Display OFF.
   //For uLCD43, uLCD-70DT, and uLCD-35DT, use 0-15 for Brightness Control, where 0 = Display OFF, though to 15 = Max Brightness ON.
   //genie.WriteStr(0, GENIE_VERSION);
-  
   
   //Serial.println(F("Happy Birthday Ying!"));
   //Serial.println(F("Credits:"));
@@ -105,22 +101,14 @@ void setup()
   snprintf(day_string, sizeof(day_string), "%d", now.day());
   snprintf(year_string, sizeof(year_string), "%d", now.year());  
   //genie.WriteObject(GENIE_OBJ_TIMER, 0, 0);
-  
-
 }
 
-
-
-void loop(){
- 
+void loop(){ 
   static long waitPeriod = millis();
   static long video_wait = millis();
   update_gps();
   update_magnetometer();
 
-
-
-  
   if (millis() >= video_wait){
     video_wait = millis() + VIDEO_TIMEOUT;
     if (video_index >= VIDEO_MAX){
@@ -132,11 +120,9 @@ void loop(){
     //Start the video
     genie.WriteObject(GENIE_OBJ_VIDEO, 0, video_index);
   }
-  
-  
+    
   if (millis() >= waitPeriod){
     waitPeriod = millis() + 1000; // rerun this code to update Cool Gauge and Slider in another 50ms time.
-    //genie.WriteStr(0, "100");
     update_pt();
     update_datetime();
   }
@@ -144,7 +130,6 @@ void loop(){
 }
 
 void update_gps(){
-
   while (Serial3.available() > 0){
     if (gps.encode(Serial3.read())){
       if (gps.location.isValid()){
@@ -176,8 +161,6 @@ void update_gps(){
   }
 }
 
-
-
 void update_magnetometer(){
   int x,y,z; //triple axis data  
   uint16_t zval;
@@ -186,9 +169,6 @@ void update_magnetometer(){
   Wire.beginTransmission(MAGNETOMETER_ADDR);
   Wire.write(0x03); //select register 3, X MSB register
   Wire.endTransmission();
-  
-  
-  
   
  //Read data from each axis, 2 registers per axis
   Wire.requestFrom(MAGNETOMETER_ADDR, 6);
@@ -200,8 +180,6 @@ void update_magnetometer(){
     y = Wire.read()<<8; //Y msb
     y |= Wire.read(); //Y lsb
   }
-  
-  
   
   z += 2048;
 
@@ -215,10 +193,7 @@ void update_magnetometer(){
     zval = 0;
   }
 
- 
-  
   genie.WriteObject(GENIE_OBJ_SCOPE, 0, zval);
-
 }
 
 void update_pt(){
@@ -228,18 +203,25 @@ void update_pt(){
   mpl115a2.getPT(&pressureKPA, &temperatureC);
   p = (uint16_t) pressureKPA;
   t = ((uint16_t) (temperatureC + .5));
-  Serial.print("temp: ");
-  Serial.println(t);
-  Serial.print("preassure: ");
-  Serial.println(p);
+  //Serial.print("temp: ");
+  //Serial.println(t);
+  //Serial.print("preassure: ");
+  //Serial.println(p);
   t = map (t, -10, 40, 0, 50);
   p = map (p, 50, 110, 0, 60);
   
   genie.WriteObject(GENIE_OBJ_THERMOMETER, 0, t);
   genie.WriteObject(GENIE_OBJ_ANGULAR_METER, 0, p);
   
-  
-  
+  unsigned int raw_data;
+  float humidity;
+  uint16_t humidity_int;
+  sht.measHumi(&raw_data);
+  humidity = sht.calcHumi(raw_data, temperatureC);
+  humidity_int = ((uint16_t) (humidity + .5));
+  genie.WriteObject(GENIE_OBJ_ANGULAR_METER, 1, humidity_int);
+  //Serial.print("humidity: ");
+  //Serial.println(humidity_int);
 }
 
 void update_datetime(){
