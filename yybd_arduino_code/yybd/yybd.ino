@@ -5,30 +5,35 @@
 #include <Sensirion.h>
 #include "RTClib.h"
 
-#define RESETLINE 4
-
-#define MAGNETOMETER_ADDR 0x1E
-#define SCOPE_MAX 75
+// Pin assignement
+#define RESETLINE       4
+// LED
+#define VIOLET_LED_PIN  9
+#define BLUE_LED_PIN    13
+// SHT11: temperature, humidity, dewpoint
+#define SHT11_DATA_PIN  2
+#define SHT11_CLOCK_PIN 3
 
 // Magnetometer
-#define MAGNETOMETER_ZOOM_OUT 8
-#define MAGNETOMETER_ZOOM_IN 7
-int8_t magnetometer_gain = 1;
-// LED
-#define LED_PIN 9
+#define MAGNETOMETER_ZOOM_OUT_BUTTON 8
+#define MAGNETOMETER_ZOOM_IN_BUTTON 7
+#define MAGNETOMETER_ADDR 0x1E
+#define SCOPE_MAX 50
+#define MAGNETOMETER_MIN -2048
+#define MAGNETOMETER_MAX 2048
+
+static int8_t magnetometer_gain = 1;
+static int magnetometer_z = 0;
+
 // Temperature and Preassure
 Adafruit_MPL115A2 mpl115a2;
 RTC_DS1307 rtc;
-// SHT11: temperature, humidity, dewpoint
-const uint8_t dataPin  =  2;
-const uint8_t clockPin =  3;
 
-static const int RXPin = 5, TXPin = 6;
 static const uint32_t GPSBaud = 38400;
 
 TinyGPSPlus gps;
 Genie genie;
-Sensirion sht = Sensirion(dataPin, clockPin);
+Sensirion sht = Sensirion(SHT11_DATA_PIN, SHT11_CLOCK_PIN);
 
 char day_string[3];
 char year_string[5];
@@ -48,7 +53,6 @@ static int prev_day = -1;
 static int prev_year = -1;
 
 static int prev_gps_valid = -1;
-// The serial connection to the GPS device
 
 void setup() {
   DateTime now;
@@ -66,13 +70,13 @@ void setup() {
   delay (5000); //let the display start up after the reset (This is important)
   genie.WriteContrast(15); // 1 = Display ON, 0 = Display OFF.
   //For uLCD43, uLCD-70DT, and uLCD-35DT, use 0-15 for Brightness Control, where 0 = Display OFF, though to 15 = Max Brightness ON.
-  //genie.WriteStr(0, GENIE_VERSION);
   
   //Serial.println(F("Happy Birthday Ying!"));
   //Serial.println(F("Credits:"));
   //Serial.println(F("\tGPS Code by Mikal Hart"));  
   
-  //Setup GPS
+  // Setup GPS
+  // The serial connection to the GPS device
   Serial3.begin(GPSBaud);
   
   //Setup Magnetometer
@@ -89,8 +93,10 @@ void setup() {
   Wire.endTransmission();  
   
   //LED
-  pinMode(LED_PIN, OUTPUT);
-  analogWrite(LED_PIN, 255);
+  pinMode(VIOLET_LED_PIN, OUTPUT);
+  analogWrite(VIOLET_LED_PIN, 255);
+  pinMode(BLUE_LED_PIN, OUTPUT);
+  analogWrite(BLUE_LED_PIN, 255);
   
   //Temperature Preassure
   mpl115a2.begin();
@@ -131,17 +137,16 @@ void loop(){
 
 void update_light_sensor() {
   int light_sensor_value = analogRead(A0);
-  Serial.print("light sensor: ");
-  Serial.println(light_sensor_value);
+  //Serial.print("light sensor: ");
+  //Serial.println(light_sensor_value);
   light_sensor_value = map(light_sensor_value, 1023, 0, 0, 100);
   genie.WriteObject(GENIE_OBJ_GAUGE, 0, light_sensor_value); 
 }
 
 void update_gps(){
-  while (Serial3.available() > 0){
-    if (gps.encode(Serial3.read())){
+  while (Serial3.available() > 0) {
+    if (gps.encode(Serial3.read())) {
       if (gps.location.isValid()){
-
         snprintf(gps_num_satalites, sizeof(gps_num_satalites), "%d", gps.satellites.value());
         dtostrf(gps.location.lat(), 10, 6, gps_lat_string);
         //snprintf(gps_lat_string, sizeof(gps_lat_string), "%f", gps.location.lat());
@@ -150,19 +155,15 @@ void update_gps(){
         dtostrf(gps.altitude.meters(), 10, 6, gps_altitude);
         //snprintf(gps_altitude, sizeof(gps_altitude), "%f", gps.altitude.meters());
         
-//        if (prev_gps_valid != gps.location.isValid()){
-          genie.WriteStr(7, "True");
-//        }
+        genie.WriteStr(7, "True");
+
         genie.WriteStr(8, gps_num_satalites);
         genie.WriteStr(9, gps_lat_string);
         genie.WriteStr(11, gps_lon_string);
         genie.WriteStr(13, gps_altitude);
         prev_gps_valid = gps.location.isValid();        
-      }
-      else {
-//        if (prev_gps_valid != gps.location.isValid()){
-          genie.WriteStr(7, "False");
-//        }
+      } else {
+        genie.WriteStr(7, "False");
         prev_gps_valid = gps.location.isValid();        
       }
     }
@@ -178,9 +179,9 @@ void update_magnetometer(){
   Wire.write(0x03); //select register 3, X MSB register
   Wire.endTransmission();
   
- //Read data from each axis, 2 registers per axis
+  //Read data from each axis, 2 registers per axis
   Wire.requestFrom(MAGNETOMETER_ADDR, 6);
-  if(6<=Wire.available()){
+  if (6 <= Wire.available()){
     x = Wire.read()<<8; //X msb
     x |= Wire.read(); //X lsb
     z = Wire.read()<<8; //Z msb
@@ -188,20 +189,17 @@ void update_magnetometer(){
     y = Wire.read()<<8; //Y msb
     y |= Wire.read(); //Y lsb
   }
-  
-  z += 2048;
-
-  zval = map(z, 0, 4096, 0, SCOPE_MAX);
-  //Serial.print("Z = ");
-  //Serial.println(z);
-  if (zval > SCOPE_MAX) {
-    zval = SCOPE_MAX;
-  }
-  if (zval < 0){
-    zval = 0;
+  Serial.print("Z = ");
+  Serial.print(z);
+  if (z >= MAGNETOMETER_MIN && z <= MAGNETOMETER_MAX) {
+    magnetometer_z = z;
   }
 
+  zval = map(magnetometer_z, MAGNETOMETER_MIN, MAGNETOMETER_MAX, 0, SCOPE_MAX);
+  Serial.print(" mapped z = ");
+  Serial.println(zval);
   genie.WriteObject(GENIE_OBJ_SCOPE, 0, zval);
+  analogWrite(BLUE_LED_PIN, map(zval, 0, SCOPE_MAX, 255, 0));
 }
 
 void update_pt(){
@@ -233,11 +231,9 @@ void update_pt(){
 }
 
 void update_datetime(){
-
   DateTime now = rtc.now();
   genie.WriteObject(GENIE_OBJ_LED_DIGITS, 0, now.hour());
   genie.WriteObject(GENIE_OBJ_LED_DIGITS, 1, now.minute());
-//  if (prev_dow != now.dayOfWeek()){
     switch (now.dayOfWeek()){
       case (0):  //Sunday
         genie.WriteStr(1, "Sunday");    
@@ -265,9 +261,7 @@ void update_datetime(){
         break;
     }
     prev_dow = now.dayOfWeek();
-//  }
 
-//  if (prev_month != now.month()){
     switch (now.month()){
       case (1):
         genie.WriteStr(2, "January");
@@ -309,21 +303,14 @@ void update_datetime(){
         genie.WriteStr(2, "End of days");
     }
     prev_month = now.month();
-//  }
 
-
-//  if (prev_day != now.day()){
     snprintf(day_string, sizeof(day_string), "%d", now.day());
     genie.WriteStr(3, day_string);
     prev_day = now.day();
-//  }
 
-//  if (prev_year != now.year()){
     snprintf(year_string, sizeof(year_string), "%d", now.year());
     genie.WriteStr(4, year_string);  
     prev_year = now.year();    
-//  }
-
 }
 
 // LONG HAND VERSION, MAYBE MORE VISIBLE AND MORE LIKE VERSION 1 OF THE LIBRARY
@@ -340,7 +327,7 @@ void myGenieEventHandler(void)
     switch (Event.reportObject.object){
       case (GENIE_OBJ_SLIDER):
       if (Event.reportObject.index == 0){
-        analogWrite(LED_PIN, map(genie.GetEventData(&Event), 0, 100, 255, 0));
+        analogWrite(VIOLET_LED_PIN, map(genie.GetEventData(&Event), 0, 100, 255, 0));
       }
       break;
       case (GENIE_OBJ_FORM):
@@ -354,7 +341,7 @@ void myGenieEventHandler(void)
       case (GENIE_OBJ_USERBUTTON):
       //Serial.print("Button: ");
       //Serial.println(Event.reportObject.index);
-      if (Event.reportObject.index == MAGNETOMETER_ZOOM_OUT){
+      if (Event.reportObject.index == MAGNETOMETER_ZOOM_OUT_BUTTON){
         if (magnetometer_gain > 0){
           magnetometer_gain--;
           Wire.beginTransmission(MAGNETOMETER_ADDR);
@@ -362,8 +349,7 @@ void myGenieEventHandler(void)
           Wire.write(magnetometer_gain << 5);
           Wire.endTransmission();          
         }
-      }
-      else if (Event.reportObject.index == MAGNETOMETER_ZOOM_OUT){
+      } else if (Event.reportObject.index == MAGNETOMETER_ZOOM_IN_BUTTON){
         if (magnetometer_gain < 7){
           magnetometer_gain++;
           Wire.beginTransmission(MAGNETOMETER_ADDR);
@@ -374,11 +360,6 @@ void myGenieEventHandler(void)
       }
       break;
     }
-  }
-
-  //If the cmd received is from a Reported Object, which occurs if a Read Object (genie.ReadOject) is requested in the main code, reply processed here.
-  if (Event.reportObject.cmd == GENIE_REPORT_OBJ)
-  {
   }
 }
 
