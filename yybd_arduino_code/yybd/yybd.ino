@@ -47,13 +47,6 @@ char gps_altitude[20];
 #define VIDEO_TIMEOUT 80
 uint8_t video_index = 0;
 
-static int prev_dow = -1;
-static int prev_month = -1;
-static int prev_day = -1;
-static int prev_year = -1;
-
-static int prev_gps_valid = -1;
-
 void setup() {
   DateTime now;
   Serial.begin(115200);
@@ -103,6 +96,11 @@ void setup() {
   
   //RTC
   rtc.begin();
+  if (!rtc.isrunning()) {
+    Serial.println("RTC is NOT running!");
+    // following line sets the RTC to the date & time this sketch was compiled
+    rtc.adjust(DateTime(__DATE__, __TIME__));
+  }
   now = rtc.now();
   snprintf(day_string, sizeof(day_string), "%d", now.day());
   snprintf(year_string, sizeof(year_string), "%d", now.year());  
@@ -161,10 +159,8 @@ void update_gps(){
         genie.WriteStr(9, gps_lat_string);
         genie.WriteStr(11, gps_lon_string);
         genie.WriteStr(13, gps_altitude);
-        prev_gps_valid = gps.location.isValid();        
       } else {
         genie.WriteStr(7, "False");
-        prev_gps_valid = gps.location.isValid();        
       }
     }
   }
@@ -260,7 +256,6 @@ void update_datetime(){
         genie.WriteStr(1, "WTF");
         break;
     }
-    prev_dow = now.dayOfWeek();
 
     switch (now.month()){
       case (1):
@@ -302,15 +297,12 @@ void update_datetime(){
       default:
         genie.WriteStr(2, "End of days");
     }
-    prev_month = now.month();
 
     snprintf(day_string, sizeof(day_string), "%d", now.day());
     genie.WriteStr(3, day_string);
-    prev_day = now.day();
 
     snprintf(year_string, sizeof(year_string), "%d", now.year());
-    genie.WriteStr(4, year_string);  
-    prev_year = now.year();    
+    genie.WriteStr(4, year_string);     
 }
 
 // LONG HAND VERSION, MAYBE MORE VISIBLE AND MORE LIKE VERSION 1 OF THE LIBRARY
@@ -324,41 +316,35 @@ void myGenieEventHandler(void)
 
   //If the cmd received is from a Reported Event (Events triggered from the Events tab of Workshop4 objects)
   if (Event.reportObject.cmd == GENIE_REPORT_EVENT){
-    switch (Event.reportObject.object){
+    switch (Event.reportObject.object) {
       case (GENIE_OBJ_SLIDER):
-      if (Event.reportObject.index == 0){
-        analogWrite(VIOLET_LED_PIN, map(genie.GetEventData(&Event), 0, 100, 255, 0));
-      }
-      break;
-      case (GENIE_OBJ_FORM):
-        prev_dow = -1;
-        prev_month = -1;
-        prev_day = -1;
-        prev_year = -1;
-          
-        prev_gps_valid = -1;      
-      break;
+        if (Event.reportObject.index == 0) {
+          analogWrite(VIOLET_LED_PIN, map(genie.GetEventData(&Event), 0, 100, 255, 0));
+        }   
+        break;
       case (GENIE_OBJ_USERBUTTON):
-      //Serial.print("Button: ");
-      //Serial.println(Event.reportObject.index);
-      if (Event.reportObject.index == MAGNETOMETER_ZOOM_OUT_BUTTON){
-        if (magnetometer_gain > 0){
-          magnetometer_gain--;
-          Wire.beginTransmission(MAGNETOMETER_ADDR);
-          Wire.write(0x02);
-          Wire.write(magnetometer_gain << 5);
-          Wire.endTransmission();          
+        //Serial.print("Button: ");
+        //Serial.println(Event.reportObject.index);
+        if (Event.reportObject.index == MAGNETOMETER_ZOOM_OUT_BUTTON){
+          if (magnetometer_gain > 0){
+            magnetometer_gain--;
+            Wire.beginTransmission(MAGNETOMETER_ADDR);
+            Wire.write(0x02);
+            Wire.write(magnetometer_gain << 5);
+            Wire.endTransmission();          
+          }
+        } else if (Event.reportObject.index == MAGNETOMETER_ZOOM_IN_BUTTON){
+          if (magnetometer_gain < 7){
+            magnetometer_gain++;
+            Wire.beginTransmission(MAGNETOMETER_ADDR);
+            Wire.write(0x02);
+            Wire.write(magnetometer_gain << 5);
+            Wire.endTransmission();          
+          }          
         }
-      } else if (Event.reportObject.index == MAGNETOMETER_ZOOM_IN_BUTTON){
-        if (magnetometer_gain < 7){
-          magnetometer_gain++;
-          Wire.beginTransmission(MAGNETOMETER_ADDR);
-          Wire.write(0x02);
-          Wire.write(magnetometer_gain << 5);
-          Wire.endTransmission();          
-        }          
-      }
-      break;
+        break;
+      default:
+        break;
     }
   }
 }
