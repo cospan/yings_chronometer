@@ -1,11 +1,11 @@
-#include <Wire.h>
-#include <TinyGPS++.h>
-#include <genieArduino.h>
 #include <Adafruit_MPL115A2.h>
+#include <genieArduino.h>
+#include <RTClib.h>
 #include <Sensirion.h>
-#include "RTClib.h"
+#include <TinyGPS++.h>
+#include <Wire.h>
 
-// Pin assignement
+// Pin assignements
 #define RESETLINE       4
 // LED
 #define VIOLET_LED_PIN  9
@@ -14,30 +14,38 @@
 #define SHT11_DATA_PIN  2
 #define SHT11_CLOCK_PIN 3
 
-// Magnetometer
-#define MAGNETOMETER_ZOOM_OUT_BUTTON 8
+// Button indices
+#define TIME_HOUR_INCR_BUTTON 5
+#define TIME_HOUR_DECR_BUTTON 6
 #define MAGNETOMETER_ZOOM_IN_BUTTON 7
-#define MAGNETOMETER_ADDR 0x1E
-#define SCOPE_MAX 50
-#define MAGNETOMETER_MIN -2048
-#define MAGNETOMETER_MAX 2048
+#define MAGNETOMETER_ZOOM_OUT_BUTTON 8
 
-static int8_t magnetometer_gain = 1;
-static int magnetometer_z = 0;
+// Magnetometer
+#define MAGNETOMETER_ADDR 0x1E
+const int kScopeMax = 50;
+const int kMagnetometerMin = -2048;
+const int kMagnetometerMax = 2048;
+
+const int32_t kNumSecondsPerHour = 3600;
+
+Genie genie;
+
+int8_t magnetometer_gain = 1;
+int magnetometer_z = 0;
 
 // Temperature and Preassure
 Adafruit_MPL115A2 mpl115a2;
-RTC_DS1307 rtc;
-
-static const uint32_t GPSBaud = 38400;
-
-TinyGPSPlus gps;
-Genie genie;
+// Humidity
 Sensirion sht = Sensirion(SHT11_DATA_PIN, SHT11_CLOCK_PIN);
 
+// Real Time Clock
+RTC_DS1307 rtc;
 char day_string[3];
 char year_string[5];
+TimeSpan adj;
 
+TinyGPSPlus gps;
+const uint32_t GPSBaud = 38400;
 char gps_num_satalites[4];
 char gps_lat_string[20];
 char gps_lon_string[20];
@@ -166,9 +174,15 @@ void update_gps(){
   }
 }
 
+int clip(int value, int min, int max) {
+  if (value < min) return min;
+  if (value > max) return max;
+  return value;
+}
+
 void update_magnetometer(){
-  int x,y,z; //triple axis data  
-  uint16_t zval;
+  int32_t x,y,z; //triple axis data  
+  uint16_t val, mapped_val;
 
   //Tell the HMC5883 where to begin reading data
   Wire.beginTransmission(MAGNETOMETER_ADDR);
@@ -185,17 +199,26 @@ void update_magnetometer(){
     y = Wire.read()<<8; //Y msb
     y |= Wire.read(); //Y lsb
   }
-  Serial.print("Z = ");
-  Serial.print(z);
-  if (z >= MAGNETOMETER_MIN && z <= MAGNETOMETER_MAX) {
-    magnetometer_z = z;
-  }
+  
+  x = clip(x, kMagnetometerMin, kMagnetometerMax);
+  y = clip(y, kMagnetometerMin, kMagnetometerMax);
+  z = clip(z, kMagnetometerMin, kMagnetometerMax);
+  val = sqrt((x * x + y * y + z * z) / 3);
 
-  zval = map(magnetometer_z, MAGNETOMETER_MIN, MAGNETOMETER_MAX, 0, SCOPE_MAX);
-  Serial.print(" mapped z = ");
-  Serial.println(zval);
-  genie.WriteObject(GENIE_OBJ_SCOPE, 0, zval);
-  analogWrite(BLUE_LED_PIN, map(zval, 0, SCOPE_MAX, 255, 0));
+  mapped_val = map(val, 0, kMagnetometerMax, 0, kScopeMax);
+  genie.WriteObject(GENIE_OBJ_SCOPE, 0, mapped_val);
+  analogWrite(BLUE_LED_PIN, map(mapped_val, 0, kScopeMax, 255, 0));
+  
+//  Serial.print(" X = ");
+//  Serial.print(x);
+//  Serial.print(" Y = ");
+//  Serial.print(y);
+//  Serial.print("Z = ");
+//  Serial.print(z);
+//  Serial.print(" val = ");
+//  Serial.print(val);
+//  Serial.print(" mapped val = ");
+//  Serial.println(mapped_val);
 }
 
 void update_pt(){
@@ -227,7 +250,7 @@ void update_pt(){
 }
 
 void update_datetime(){
-  DateTime now = rtc.now();
+  DateTime now = rtc.now() + adj;
   genie.WriteObject(GENIE_OBJ_LED_DIGITS, 0, now.hour());
   genie.WriteObject(GENIE_OBJ_LED_DIGITS, 1, now.minute());
     switch (now.dayOfWeek()){
@@ -305,16 +328,10 @@ void update_datetime(){
     genie.WriteStr(4, year_string);     
 }
 
-// LONG HAND VERSION, MAYBE MORE VISIBLE AND MORE LIKE VERSION 1 OF THE LIBRARY
-void myGenieEventHandler(void)
-{
+void myGenieEventHandler(void) {
   genieFrame Event;
   genie.DequeueEvent(&Event);
-  //Serial.println("Dequeue event!");
 
-  int slider_val = 0;
-
-  //If the cmd received is from a Reported Event (Events triggered from the Events tab of Workshop4 objects)
   if (Event.reportObject.cmd == GENIE_REPORT_EVENT){
     switch (Event.reportObject.object) {
       case (GENIE_OBJ_SLIDER):
@@ -325,22 +342,33 @@ void myGenieEventHandler(void)
       case (GENIE_OBJ_USERBUTTON):
         //Serial.print("Button: ");
         //Serial.println(Event.reportObject.index);
-        if (Event.reportObject.index == MAGNETOMETER_ZOOM_OUT_BUTTON){
-          if (magnetometer_gain > 0){
-            magnetometer_gain--;
-            Wire.beginTransmission(MAGNETOMETER_ADDR);
-            Wire.write(0x02);
-            Wire.write(magnetometer_gain << 5);
-            Wire.endTransmission();          
-          }
-        } else if (Event.reportObject.index == MAGNETOMETER_ZOOM_IN_BUTTON){
-          if (magnetometer_gain < 7){
-            magnetometer_gain++;
-            Wire.beginTransmission(MAGNETOMETER_ADDR);
-            Wire.write(0x02);
-            Wire.write(magnetometer_gain << 5);
-            Wire.endTransmission();          
-          }          
+        switch (Event.reportObject.index) {
+          case MAGNETOMETER_ZOOM_OUT_BUTTON:
+            if (magnetometer_gain > 0){
+              magnetometer_gain--;
+              Wire.beginTransmission(MAGNETOMETER_ADDR);
+              Wire.write(0x02);
+              Wire.write(magnetometer_gain << 5);
+              Wire.endTransmission();          
+            }
+            break;
+          case MAGNETOMETER_ZOOM_IN_BUTTON:
+            if (magnetometer_gain < 7){
+              magnetometer_gain++;
+              Wire.beginTransmission(MAGNETOMETER_ADDR);
+              Wire.write(0x02);
+              Wire.write(magnetometer_gain << 5);
+              Wire.endTransmission();          
+            }
+            break;
+          case TIME_HOUR_INCR_BUTTON:
+            adj = adj + TimeSpan(kNumSecondsPerHour);
+            break;
+          case TIME_HOUR_DECR_BUTTON:
+            adj = adj - TimeSpan(kNumSecondsPerHour);
+            break;
+          default: 
+            break;        
         }
         break;
       default:
