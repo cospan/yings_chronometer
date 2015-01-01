@@ -956,3 +956,43 @@ StaticText
     Width                        286
     WordWrap                     Yes
 end
+UserButton
+    Name                         Userbutton6
+    Height                       24
+    Images                       Next-icon.png
+    Left                         456
+    Matrix                       -1
+    Momentary                    Yes
+    Stretch                      No
+    Top                          0
+    Width                        24
+    OnChanged                    ''
+end
+Form
+    Name                         Form3
+    Bgtype                       Color
+    Color                        BLACK
+    Image                        (None)
+    Source.Height                0
+    Source.Left                  0
+    Source.Top                   0
+    Source.Width                 0
+    OnActivate                   ''
+    OnCreate                     ''
+    OnRepeat                     ''
+    OnTouchMoving                ''
+    OnTouchPressed               ''
+    OnTouchReleased              ''
+end
+UserButton
+    Name                         Userbutton5
+    Height                       24
+    Images                       Previous-icon.png
+    Left                         452
+    Matrix                       -1
+    Momentary                    Yes
+    Stretch                      No
+    Top                          28
+    Width                        24
+    OnChanged                    ''
+end
