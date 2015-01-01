@@ -1,4 +1,4 @@
-// File generated 10/18/2014 11:51:57 PM
+// File generated 12/7/2014 4:44:29 PM
 // Warning! This is a generated file, any manual changes will be
 // lost during the next generation.
 
@@ -50,15 +50,17 @@
     iStatictext5    // offset 0x54CE00
     iGauge0         // offset 0x54DC00
     iStatictext6    // offset 0x5E1C00
-    iUserbutton0    // offset 0x5E2000
-    iUserbutton1    // offset 0x5E2A00
-    iUserbutton2    // offset 0x5E3400
-    iStatictext10   // offset 0x5E3E00
-    iStatictext0    // offset 0x5E6800
-    iUserbutton4    // offset 0x5EF400
-    iVideo0         // offset 0x5EFE00
-    iStatictext3    // offset 0x650E00
-    iStatictext4    // offset 0x652400
+    iUserbutton5    // offset 0x5E2000
+    iUserbutton6    // offset 0x5E3200
+    iUserbutton0    // offset 0x5E4400
+    iUserbutton1    // offset 0x5E4E00
+    iUserbutton2    // offset 0x5E5800
+    iStatictext10   // offset 0x5E6200
+    iStatictext0    // offset 0x5EB200
+    iUserbutton4    // offset 0x5F6A00
+    iVideo0         // offset 0x5F7400
+    iStatictext3    // offset 0x658400
+    iStatictext4    // offset 0x659A00
 #END
 
 #constant  Strings1StartH   0x0

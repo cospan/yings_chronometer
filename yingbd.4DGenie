@@ -564,6 +564,30 @@ StaticText
     Width                        27
     WordWrap                     Yes
 end
+UserButton
+    Name                         Userbutton5
+    Height                       32
+    Images                       plus.png\nplus_pressed.png
+    Left                         4
+    Matrix                       -1
+    Momentary                    Yes
+    Stretch                      No
+    Top                          70
+    Width                        32
+    OnChanged                    'Report Message'
+end
+UserButton
+    Name                         Userbutton6
+    Height                       32
+    Images                       minus.png\nminus_pressed.png
+    Left                         98
+    Matrix                       -1
+    Momentary                    Yes
+    Stretch                      No
+    Top                          70
+    Width                        32
+    OnChanged                    'Report Message'
+end
 Form
     Name                         Form1
     Bgtype                       Color

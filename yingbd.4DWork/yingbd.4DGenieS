@@ -1,6 +1,6 @@
 #platform "uLCD-43PT"
 
-// generated 10/18/2014 11:52:05 PM
+// generated 12/7/2014 4:44:38 PM
 
 #MODE RUNFLASH
 
@@ -116,15 +116,15 @@
     REPORT_OBJ      5
     REPORT_EVENT    7
 // End P1.inc
-    nObjects        27
-    nInputs         15
+    nObjects        29
+    nInputs         19
     ANITIMERS       0
 #END
 
 #DATA
-    word formstidx 0, 18, 22
-    word formenidx 18, 22, 27
-    word IPControls -1, -1, -1, -1, -1, 0, -1, -1, 44, -1, -1, 88, 132, -1, -1, -1, -1, -1, 176, 220, 242, -1, -1, 286
+    word formstidx 0, 20, 24
+    word formenidx 20, 24, 29
+    word IPControls -1, -1, -1, -1, -1, 0, -1, -1, 44, -1, -1, 88, 132, -1, -1, -1, -1, -1, 176, 220, 264, 308, 330, -1, -1, 374
     word IPData tUserButton, 1, -1, -1, -1, -1, -1, -1, 0, 22, 8,
                 OT_ACTIVATE, 10, 1, 0, 18, 0, 0, 0, 0, 0, 0,
                 tGSlider, 1, 258, 103, 100, 636, -1, -1, 66, 0, 2,
@@ -133,12 +133,16 @@
                 OT_REPORT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7,
                 tUserButton, 1, -1, -1, -1, -1, -1, -1, 0, 154, 18,
                 OT_REPORT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8,
-                tUserButton, 1, -1, -1, -1, -1, -1, -1, 0, 198, 2,
+                tUserButton, 1, -1, -1, -1, -1, -1, -1, 0, 198, 12,
+                OT_REPORT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5,
+                tUserButton, 1, -1, -1, -1, -1, -1, -1, 0, 242, 14,
+                OT_REPORT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,
+                tUserButton, 1, -1, -1, -1, -1, -1, -1, 0, 286, 2,
                 OT_ACTIVATE, 10, 2, 0, 18, 0, 0, 0, 0, 0, 0,
                 tUserButton, 1, -1, -1, -1, -1, -1, -1, 0, 0, 4,
-                tUserButton, 1, -1, -1, -1, -1, -1, -1, 0, 264, 6,
+                tUserButton, 1, -1, -1, -1, -1, -1, -1, 0, 352, 6,
                 OT_ACTIVATE, 10, 0, 0, 18, 0, 0, 0, 0, 0, 0,
-                tUserButton, 1, -1, -1, -1, -1, -1, -1, 0, 308, 10,
+                tUserButton, 1, -1, -1, -1, -1, -1, -1, 0, 396, 10,
                 OT_ACTIVATE, 10, 1, 0, 18, 0, 0, 0, 0, 0, 0
     word iStrings0  Strings0StartH, Strings0StartL, Strings0Size, 0, 72, 159, 87, WHITE, BLUE, 0, 1, 1, 1 
     word iStrings1  Strings1StartH, Strings1StartL, Strings1Size, 0, 48, 63, 67, WHITE, BLACK, 0, 1, 1, 0 
@@ -184,7 +188,7 @@
     word o4Dbuttons 0
     word oAniButtons 0
     word oColorPickers 0
-    word oUserButtons 9, iUserbutton0, iUserbutton1, iUserbutton2, iUserbutton3, iUserbutton4, -1, -1, iUserbutton7, iUserbutton8
+    word oUserButtons 9, iUserbutton0, iUserbutton1, iUserbutton2, iUserbutton3, iUserbutton4, iUserbutton5, iUserbutton6, iUserbutton7, iUserbutton8
     word oTimers 0
     word oSoundss 0
     word oPinOutputs 0
