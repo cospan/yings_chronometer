@@ -51,9 +51,13 @@ char gps_lat_string[20];
 char gps_lon_string[20];
 char gps_altitude[20];
 
-#define VIDEO_MAX 30
-#define VIDEO_TIMEOUT 80
-uint8_t video_index = 0;
+const uint8_t kVideo0Frames = 30;
+const uint8_t kVideo0FrameDelay = 80;
+uint8_t video0_index = 0;
+
+const uint8_t kVideo1Frames = 7;
+const uint8_t kVideo1FrameDelay = 250;
+uint8_t video1_index = 0;
 
 void setup() {
   DateTime now;
@@ -116,23 +120,36 @@ void setup() {
 
 void loop(){ 
   static long waitPeriod = millis();
-  static long video_wait = millis();
+  static long video0_period = millis();
+  static long video1_period = millis();
   update_gps();
   update_magnetometer();
   update_light_sensor();
   
-  if (millis() >= video_wait){
-    video_wait = millis() + VIDEO_TIMEOUT;
-    if (video_index >= VIDEO_MAX){
-      video_index = 0;
+  if (millis() >= video0_period){
+    video0_period = millis() + kVideo0FrameDelay;
+    if (video0_index >= kVideo0Frames){
+      video0_index = 0;
     }
     else {
-      video_index++;
+      video0_index++;
     }
     //Start the video
-    genie.WriteObject(GENIE_OBJ_VIDEO, 0, video_index);
+    genie.WriteObject(GENIE_OBJ_VIDEO, 0, video0_index);
   }
-    
+  
+  if (millis() >= video1_period){
+    video1_period = millis() + kVideo1FrameDelay;
+    if (video1_index >= kVideo1Frames){
+      video1_index = 0;
+    }
+    else {
+      video1_index++;
+    }
+    //Start the video
+    genie.WriteObject(GENIE_OBJ_VIDEO, 1, video1_index);
+  }
+  
   if (millis() >= waitPeriod){
     waitPeriod = millis() + 1000; // rerun this code to update Cool Gauge and Slider in another 50ms time.
     update_pt();
