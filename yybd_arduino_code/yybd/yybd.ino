@@ -151,7 +151,7 @@ void loop(){
     
     if (video1_incr) {
       video1_index++;
-    }else {
+    } else {
       video1_index--;
     }
   }
