@@ -58,6 +58,7 @@ uint8_t video0_index = 0;
 const uint8_t kVideo1Frames = 7;
 const uint8_t kVideo1FrameDelay = 250;
 uint8_t video1_index = 0;
+boolean video1_incr = true;
 
 void setup() {
   DateTime now;
@@ -121,12 +122,12 @@ void setup() {
 void loop(){ 
   static long waitPeriod = millis();
   static long video0_period = millis();
-  static long video1_period = millis();
+  static long v1_next_update_time = millis();
   update_gps();
   update_magnetometer();
   update_light_sensor();
   
-  if (millis() >= video0_period){
+  if (millis() >= video0_period) {
     video0_period = millis() + kVideo0FrameDelay;
     if (video0_index >= kVideo0Frames){
       video0_index = 0;
@@ -138,16 +139,21 @@ void loop(){
     genie.WriteObject(GENIE_OBJ_VIDEO, 0, video0_index);
   }
   
-  if (millis() >= video1_period){
-    video1_period = millis() + kVideo1FrameDelay;
-    if (video1_index >= kVideo1Frames){
-      video1_index = 0;
-    }
-    else {
-      video1_index++;
-    }
+  if (millis() >= v1_next_update_time) {
     //Start the video
     genie.WriteObject(GENIE_OBJ_VIDEO, 1, video1_index);
+    v1_next_update_time = millis() + kVideo1FrameDelay;
+    if (video1_index >= kVideo1Frames - 1){
+      video1_incr = false;
+    } else if (video1_index <= 0) {
+      video1_incr = true;
+    }
+    
+    if (video1_incr) {
+      video1_index++;
+    }else {
+      video1_index--;
+    }
   }
   
   if (millis() >= waitPeriod){
