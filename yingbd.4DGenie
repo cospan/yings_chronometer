@@ -980,3 +980,63 @@ StaticText
     Width                        286
     WordWrap                     Yes
 end
+UserButton
+    Name                         Userbutton9
+    Height                       24
+    Images                       Next-icon.png
+    Left                         456
+    Matrix                       -1
+    Momentary                    Yes
+    Stretch                      No
+    Top                          0
+    Width                        24
+    OnChanged                    Form3Activate
+end
+Form
+    Name                         Form3
+    Bgtype                       Color
+    Color                        BLACK
+    Image                        (None)
+    Source.Height                0
+    Source.Left                  0
+    Source.Top                   0
+    Source.Width                 0
+    OnActivate                   ''
+    OnCreate                     ''
+    OnRepeat                     ''
+    OnTouchMoving                ''
+    OnTouchPressed               ''
+    OnTouchReleased              ''
+end
+UserButton
+    Name                         Userbutton10
+    Height                       24
+    Images                       Previous-icon.png
+    Left                         456
+    Matrix                       -1
+    Momentary                    Yes
+    Stretch                      No
+    Top                          28
+    Width                        24
+    OnChanged                    Form2Activate
+end
+Video
+    Name                         Video1
+    Frames.First                 0
+    Frames.Last                  6
+    Frames.FrameDelay            250
+    Height                       221
+    Left                         64
+    Source.Height                884
+    Source.Left                  0
+    Source.Top                   0
+    Source.Width                 1328
+    Visible                      Yes
+    Top                          24
+    Video                        photo.gif
+    Width                        332
+    OnChanged                    ''
+    OnTouchMoving                ''
+    OnTouchPressed               ''
+    OnTouchReleased              ''
+end
