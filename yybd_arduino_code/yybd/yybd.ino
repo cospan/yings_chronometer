@@ -140,7 +140,7 @@ void loop(){
   }
   
   if (millis() >= v1_next_update_time) {
-    //Start the video
+    // Show video frame.
     genie.WriteObject(GENIE_OBJ_VIDEO, 1, video1_index);
     v1_next_update_time = millis() + kVideo1FrameDelay;
     if (video1_index >= kVideo1Frames - 1){
