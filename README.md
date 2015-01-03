@@ -7,3 +7,6 @@
   // following line sets the RTC to the date & time this sketch was compiled
   RTC.adjust(DateTime(__DATE__, __TIME__));
 ```
+
+###[4D Systems Intelligent Display Module (uLCD-43PT)](http://www.4dsystems.com.au/group/4D_Intelligent_Display_Modules/)
+4.3" Intelligent LCD module with resistive touch. Use [Workshop4 IDE](http://www.4dsystems.com.au/product/4D_Workshop_4_IDE/) for making the LCD display GUI.
